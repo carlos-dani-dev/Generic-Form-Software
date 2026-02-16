@@ -38,7 +38,7 @@ class Response(Base):
     __tablename__ = "response"
     
     response_id = Column(Integer, primary_key=True, index=True)
-    restaurant_code = Column(String, nullable=False)
+    city = Column(String, nullable=False)
     begin_date = Column(DateTime, nullable=False)
     end_date = Column(DateTime, nullable=True)
     survey_id = Column(Integer, ForeignKey("survey.survey_id"), nullable=True)

@@ -32,7 +32,7 @@ templates = Jinja2Templates(directory="App/templates")
 
 
 class ResponseRequest(BaseModel):
-    restaurant_code: str = Field(min_length=3)
+    city: str = Field(min_length=3)
     begin_date: datetime
     end_date: Optional[datetime] = None
 

@@ -5,8 +5,14 @@ var responseId=-1;
 
 document.addEventListener("DOMContentLoaded", async () => {
     
+    if (!city) {
+        alert('City not found. Please select a city first.');
+        window.location.href = `/survey/city/${surveyId}`;
+        return;
+    }
+
     const payload = {
-        restaurant_code: city,
+        city: city,
         begin_date: new Date().toISOString(),
         end_date: null
     };
