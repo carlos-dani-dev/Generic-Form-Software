@@ -17,8 +17,10 @@
                 <thead>
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Info</th>
-                        <th scope="col">Actions</th>
+                        <th scope="col">Nome</th>
+                        <th scope="col">Descrição</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -26,17 +28,24 @@
                     <tr class="pointer">
                         <td>{{ loop.index }}</td>
                         <td>{{ survey.name }}</td>
+                        <td>{{ survey.description }}</td>
+                        <td>{{ survey.survey_status.survey_status }}</td>
                         <td>
                             <button onclick="window.location.href='/admin/question/{{ survey.survey_id }}'" type="button" class="btn btn-info">
                                 Editar questões
+                            </button>
+                            <button onclick="window.location.href='/admin/create-question/{{ survey.survey_id }}'" type="button" class="btn btn-info">
+                                Adicionar questão
                             </button>
                         </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
-            <a href="admin/add-survey-page.html" class="btn btn-primary">Adicionar pesquisa</a>
         </div>
+        <button onclick="window.location.href='/admin/create-survey'" type="button" class="btn btn-info">
+            Criar pesquisa
+        </button>
     </div>
 </div>
 {% endblock %}

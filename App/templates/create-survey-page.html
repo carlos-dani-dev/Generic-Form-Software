@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="container mt-3">
+    <div class="card mt-3">
+        <form class="" id="createSurveyForm">
+            <div class="card-body">
+                <div class="form-group">
+                    <label>Nome da pesquisa</label>
+                    <textarea name="name" class="form-control" rows=2></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Descrição da pesquisa</label>
+                    <textarea name="description" class="form-control" rows=3></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select name="status" id="selectStatus" class="form-control">
+                        {% for survey_status in surveys_status %}
+                        <option value="{{ survey_status.survey_status_id }}">{{ survey_status.survey_status }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <input name="start_date" type="date" class="form-check-input" id="start-date">
+                            <label for="start-date" class="form-check-label">Data de início</label>    
+                        </div>
+                        <div class="col-md-6">
+                            <input name="end_date" type="date" class="form-check-input" id="end-date">
+                            <label for="end-date" class="form-check-label">Data de fim</label>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Criar</button>
+            </div>
+        </form>
+    </div>
+    <a href="/admin/survey" class="btn btn-success">Back</a>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script src="{{ url_for('static', path='/js/pages/create_survey.js') }}" defer></script>
+{% endblock %}

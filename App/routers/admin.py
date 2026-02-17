@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from fastapi import APIRouter, Depends, HTTPException, Path, Request, status
 from ..database import SessionLocal
 from pydantic import BaseModel, Field
-from ..models import Question, QuestionOption, Survey
+from ..models import Question, QuestionOption, Survey, SurveyStatus
 from .auth import get_current_user
 from starlette.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
@@ -61,6 +61,8 @@ async def render_question_page(request: Request, db: db_dependency, survey_id: i
         access_token = request.cookies.get('access_token')
         user = await get_current_user(access_token)
         
+        print(user)
+        
         if user is None:
             return redirect_to_login()
         
@@ -85,6 +87,38 @@ async def render_question_page(request: Request, db: db_dependency, question_id:
         question_options = db.query(QuestionOption).filter(QuestionOption.question_id == question_id).all()
 
         return templates.TemplateResponse("edit-question-page.html", {"request": request, "question": question, "question_options": question_options, "user": user})
+    except:
+        return redirect_to_login()
+
+
+@router.get("/create-survey")
+async def render_create_survey_page(request: Request, db: db_dependency):
+    try:
+        access_token = request.cookies.get('access_token')
+        user = await get_current_user(access_token)
+
+        if user is None:
+            return redirect_to_login()
+        
+        surveys_status = db.query(SurveyStatus).all()
+        
+        return templates.TemplateResponse("create-survey-page.html", {"request": request, "surveys_status": surveys_status})
+    except:
+        return redirect_to_login()
+
+
+@router.get("/create-question/{survey_id}")
+async def render_create_question_page(request: Request, db: db_dependency, survey_id: int):
+    try:
+        access_token = request.cookies.get('access_token')
+        user = await get_current_user(access_token)
+
+        if user is None:
+            return redirect_to_login()
+        
+        surveys_status = db.query(SurveyStatus).all()
+        
+        return templates.TemplateResponse("create-question-page.html", {"request": request})
     except:
         return redirect_to_login()
 

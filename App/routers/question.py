@@ -76,12 +76,12 @@ async def get_all_question(db: db_dependency, survey_id: int = Path(gt=0)):
     return db.query(Question).filter(Question.survey_id == survey_id).all()
 
 
-@router.post("/create/{survey_id}/{question_type_id}", status_code=status.HTTP_201_CREATED)
+@router.post("/create/{survey_id}", status_code=status.HTTP_201_CREATED)
 async def create_question(db: db_dependency, question_request: QuestionRequest,
-                          survey_id: int = Path(gt=0), question_type_id: int = Path(gt=0)):
+                          survey_id: int = Path(gt=0)):
     
     question_model = Question(**question_request.model_dump(),
-                              survey_id=survey_id, question_type_id=question_type_id)
+                              survey_id=survey_id, question_type_id=1)
     db.add(question_model)
     db.commit()
 

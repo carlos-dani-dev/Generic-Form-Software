@@ -1,5 +1,6 @@
 from .database import Base
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, UniqueConstraint
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey
+from sqlalchemy.orm import relationship
 
 
 class Users(Base):
@@ -28,6 +29,8 @@ class Survey(Base):
     max_responses = Column(Integer)
     survey_status_id = Column(Integer, ForeignKey("survey_status.survey_status_id"))
     
+    survey_status = relationship("SurveyStatus")
+    
 class SurveyStatus(Base):
     __tablename__ = "survey_status"
     
@@ -43,6 +46,8 @@ class Response(Base):
     end_date = Column(DateTime, nullable=True)
     survey_id = Column(Integer, ForeignKey("survey.survey_id"), nullable=True)
 
+    survey = relationship("Survey")
+
 class Answer(Base):
     __tablename__ = "answer"
         
@@ -50,6 +55,9 @@ class Answer(Base):
     answer = Column(String, nullable=True)
     response_id = Column(Integer, ForeignKey("response.response_id"), nullable=True)
     question_id = Column(Integer, ForeignKey("question.question_id"), nullable=True)
+    
+    response = relationship("Response")
+    question = relationship("Question")
 
 class Question(Base):
     __tablename__ = "question"
@@ -60,6 +68,9 @@ class Question(Base):
     is_mandatory = Column(Boolean, nullable=False)
     question_type_id = Column(Integer, ForeignKey("question_type.question_type_id"))
     survey_id = Column(Integer, ForeignKey("survey.survey_id"), nullable=False)
+    
+    question_type = relationship("QuestionType")
+    survey = relationship("Survey")
 
 class AnswerOption(Base):
     __tablename__ = "answer_option"
@@ -67,6 +78,8 @@ class AnswerOption(Base):
     answer_option_id = Column(Integer, primary_key=True)
     answer_id = Column(Integer, ForeignKey("answer.answer_id"))
     question_option_id = Column(Integer, ForeignKey("question_option.question_option_id"), nullable=False)
+    
+    question_option = relationship("QuestionOption")
 
 class QuestionOption(Base):
     __tablename__ = "question_option"
@@ -75,6 +88,8 @@ class QuestionOption(Base):
     order = Column(Integer, nullable=False)
     value = Column(String, nullable=False)
     question_id = Column(Integer, ForeignKey("question.question_id"), nullable=False)
+    
+    question = relationship("Question")
 
 class QuestionType(Base):
     __tablename__ = "question_type"

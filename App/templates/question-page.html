@@ -2,32 +2,32 @@
 
 {% block content %}
 <div class="container mt-3">
-        {% for question in questions %}
-        <div class="card mt-3">
-            <div class="card-body">
-                <div class="form-group">
-                    <label>Texto da questão</label>
-                    <textarea name="description" class="form-control" rows=3 disabled>{{question.question_text}}</textarea>
-                </div>
-                <div class="form-group">
-                    <label>Ordem</label>
-                    <select name="priority" class="form-control" disabled>
-                        <option {% if question.order == 1 %} selected="selected" {% endif %}>1</option>
-                        <option {% if question.order == 2 %} selected="selected" {% endif %}>2</option>
-                        <option {% if question.order == 3 %} selected="selected" {% endif %}>3</option>
-                        <option {% if question.order == 4 %} selected="selected" {% endif %}>4</option>
-                        <option {% if question.order == 5 %} selected="selected" {% endif %}>5</option>
-                    </select>
-                </div>
-                <div class="form-group form-check">
-                    <input type="checkbox" class="form-check-input" name="complete" {% if question.is_mandatory%} checked {% endif %} disabled>
-                    <label class="form-check-label">Obrigatória</label>
-                </div>
-                <button type="button" class="btn btn-primary editQuestionButton" data-question-id="{{ question.question_id }}">Editar</button>
-                <button type="button" class="btn btn-danger deleteQuestionButton" data-question-id="{{ question.question_id }}">Deletar</button>
+    {% for question in questions %}
+    <div class="card mt-3">
+        <div class="card-body">
+            <div class="form-group">
+                <label>Texto da questão</label>
+                <textarea name="description" class="form-control" rows=3 disabled>{{question.question_text}}</textarea>
             </div>
+            <div class="form-group">
+                <label>Ordem</label>
+                <select name="priority" class="form-control" disabled>
+                    <option {% if question.order == 1 %} selected="selected" {% endif %}>1</option>
+                    <option {% if question.order == 2 %} selected="selected" {% endif %}>2</option>
+                    <option {% if question.order == 3 %} selected="selected" {% endif %}>3</option>
+                    <option {% if question.order == 4 %} selected="selected" {% endif %}>4</option>
+                    <option {% if question.order == 5 %} selected="selected" {% endif %}>5</option>
+                </select>
+            </div>
+            <div class="form-group form-check">
+                <input type="checkbox" class="form-check-input" name="complete" {% if question.is_mandatory%} checked {% endif %} disabled>
+                <label class="form-check-label">Obrigatória</label>
+            </div>
+            <button type="button" class="btn btn-primary editQuestionButton" data-question-id="{{ question.question_id }}">Editar</button>
+            <button type="button" class="btn btn-danger deleteQuestionButton" data-question-id="{{ question.question_id }}">Deletar</button>
         </div>
-        {% endfor %}
-        <a href="/admin/survey" class="btn btn-success">Back</a>
+    </div>
+    {% endfor %}
+    <a href="/admin/survey" class="btn btn-secondary mt-3">Back</a>
 </div>
 {% endblock %}

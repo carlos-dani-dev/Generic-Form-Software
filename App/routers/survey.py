@@ -86,7 +86,6 @@ async def render_survey_response_page(request: Request,
     return templates.TemplateResponse("response.html", {"request": request,
             "questions": question_model, "questions_opt": question_opt_list})
 
-
 ### ENDPOINTS ###
 
 
@@ -133,11 +132,11 @@ async def get_all_surveys(db: db_dependency):
     return db.query(Survey).all()
 
 
-@router.post("/create", status_code=status.HTTP_201_CREATED)
-async def create_survey(db: db_dependency, survey_request: SurveyRequest):
+@router.post("/create/{survey_status_id}", status_code=status.HTTP_201_CREATED)
+async def create_survey(db: db_dependency, survey_request: SurveyRequest, survey_status_id: int = Path(gt=0)):
     
     # pesquisa criada automaticamente com status_id = 0
-    survey_model = Survey(**survey_request.model_dump(), survey_status_id = 1)
+    survey_model = Survey(**survey_request.model_dump(), survey_status_id = survey_status_id)
     db.add(survey_model)
     db.commit()
 
