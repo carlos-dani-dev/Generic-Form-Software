@@ -61,8 +61,6 @@ async def render_question_page(request: Request, db: db_dependency, survey_id: i
         access_token = request.cookies.get('access_token')
         user = await get_current_user(access_token)
         
-        print(user)
-        
         if user is None:
             return redirect_to_login()
         

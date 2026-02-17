@@ -1,33 +1,77 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<div class="container mt-3">
+<div class="container-fluid py-4 px-4">
+
     {% for question in questions %}
-    <div class="card mt-3">
-        <div class="card-body">
-            <div class="form-group">
-                <label>Texto da questão</label>
-                <textarea name="description" class="form-control" rows=3 disabled>{{question.question_text}}</textarea>
+    <div class="card border-0 shadow-sm mb-4">
+
+        <div class="card-body p-4">
+
+            <div class="mb-3">
+                <label class="form-label small text-muted">
+                    Texto da questão
+                </label>
+                <textarea
+                    name="description"
+                    class="form-control form-control-sm"
+                    rows="3"
+                    disabled>{{question.question_text}}</textarea>
             </div>
-            <div class="form-group">
-                <label>Ordem</label>
-                <select name="priority" class="form-control" disabled>
-                    <option {% if question.order == 1 %} selected="selected" {% endif %}>1</option>
-                    <option {% if question.order == 2 %} selected="selected" {% endif %}>2</option>
-                    <option {% if question.order == 3 %} selected="selected" {% endif %}>3</option>
-                    <option {% if question.order == 4 %} selected="selected" {% endif %}>4</option>
-                    <option {% if question.order == 5 %} selected="selected" {% endif %}>5</option>
+
+            <div class="mb-3">
+                <label class="form-label small text-muted">
+                    Ordem
+                </label>
+                <select
+                    name="priority"
+                    class="form-select form-select-sm"
+                    disabled>
+                    <option {% if question.order == 1 %} selected {% endif %}>1</option>
+                    <option {% if question.order == 2 %} selected {% endif %}>2</option>
+                    <option {% if question.order == 3 %} selected {% endif %}>3</option>
+                    <option {% if question.order == 4 %} selected {% endif %}>4</option>
+                    <option {% if question.order == 5 %} selected {% endif %}>5</option>
                 </select>
             </div>
-            <div class="form-group form-check">
-                <input type="checkbox" class="form-check-input" name="complete" {% if question.is_mandatory%} checked {% endif %} disabled>
-                <label class="form-check-label">Obrigatória</label>
+
+            <div class="form-check mb-3">
+                <input
+                    type="checkbox"
+                    class="form-check-input"
+                    name="complete"
+                    {% if question.is_mandatory %} checked {% endif %}
+                    disabled>
+                <label class="form-check-label small text-muted">
+                    Obrigatória
+                </label>
             </div>
-            <button type="button" class="btn btn-primary editQuestionButton" data-question-id="{{ question.question_id }}">Editar</button>
-            <button type="button" class="btn btn-danger deleteQuestionButton" data-question-id="{{ question.question_id }}">Deletar</button>
+
+            <div class="d-flex gap-2">
+                <button
+                    type="button"
+                    class="btn btn-sm btn-primary editQuestionButton"
+                    data-question-id="{{ question.question_id }}">
+                    Editar
+                </button>
+
+                <button
+                    type="button"
+                    class="btn btn-sm btn-danger deleteQuestionButton"
+                    data-question-id="{{ question.question_id }}">
+                    Deletar
+                </button>
+            </div>
+
         </div>
     </div>
     {% endfor %}
-    <a href="/admin/survey" class="btn btn-secondary mt-3">Back</a>
+
+    <a
+        href="/admin/survey"
+        class="btn btn-sm btn-outline-secondary">
+        Voltar
+    </a>
+
 </div>
 {% endblock %}

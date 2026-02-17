@@ -2,43 +2,117 @@
 
 {% block content %}
 
-<div class="container mt-3">
-    <div class="card mt-3">
-        <form class="" id="createSurveyForm">
-            <div class="card-body">
-                <div class="form-group">
-                    <label>Nome da pesquisa</label>
-                    <textarea name="name" class="form-control" rows=2></textarea>
+<div class="container-fluid py-4 px-4">
+
+    <div class="card border-0 shadow-sm">
+
+        <form id="createSurveyForm">
+
+            <div class="card-body p-4">
+
+                <div class="mb-4">
+                    <h5 class="fw-semibold mb-1">Criar pesquisa</h5>
+                    <small class="text-muted">
+                        Cadastro de uma nova pesquisa
+                    </small>
                 </div>
-                <div class="form-group">
-                    <label>Descrição da pesquisa</label>
-                    <textarea name="description" class="form-control" rows=3></textarea>
+
+                <div class="mb-3">
+                    <label class="form-label small text-muted">
+                        Nome da pesquisa
+                    </label>
+                    <textarea
+                        name="name"
+                        class="form-control form-control-sm"
+                        rows="2"></textarea>
                 </div>
-                <div class="form-group">
-                    <label>Status</label>
-                    <select name="status" id="selectStatus" class="form-control">
+
+                <div class="mb-3">
+                    <label class="form-label small text-muted">
+                        Descrição da pesquisa
+                    </label>
+                    <textarea
+                        name="description"
+                        class="form-control form-control-sm"
+                        rows="3"></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small text-muted">
+                        Status
+                    </label>
+                    <select
+                        name="status"
+                        id="selectStatus"
+                        class="form-select form-select-sm">
                         {% for survey_status in surveys_status %}
-                        <option value="{{ survey_status.survey_status_id }}">{{ survey_status.survey_status }}</option>
+                        <option value="{{ survey_status.survey_status_id }}">
+                            {{ survey_status.survey_status }}
+                        </option>
                         {% endfor %}
                     </select>
                 </div>
-                <div class="form-group">
-                    <div class="row">
+
+                <div class="mb-4">
+                    <label class="form-label small text-muted d-block mb-2">
+                        Período da pesquisa
+                    </label>
+
+                    <div class="row g-3">
+
                         <div class="col-md-6">
-                            <input name="start_date" type="date" class="form-check-input" id="start-date">
-                            <label for="start-date" class="form-check-label">Data de início</label>    
+                            <div class="form-check ps-0">
+                                <label
+                                    for="start-date"
+                                    class="form-label small text-muted">
+                                    Data de início
+                                </label>
+                                <input
+                                    name="start_date"
+                                    type="date"
+                                    class="form-control form-control-sm"
+                                    id="start-date">
+                            </div>
                         </div>
+
                         <div class="col-md-6">
-                            <input name="end_date" type="date" class="form-check-input" id="end-date">
-                            <label for="end-date" class="form-check-label">Data de fim</label>
+                            <div class="form-check ps-0">
+                                <label
+                                    for="end-date"
+                                    class="form-label small text-muted">
+                                    Data de fim
+                                </label>
+                                <input
+                                    name="end_date"
+                                    type="date"
+                                    class="form-control form-control-sm"
+                                    id="end-date">
+                            </div>
                         </div>
+
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary">Criar</button>
+
+                <div class="d-flex justify-content-start gap-2">
+                    <a
+                        href="/admin/survey"
+                        class="btn btn-sm btn-secondary">
+                        Voltar
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="btn btn-sm btn-success">
+                        Criar
+                    </button>
+                </div>
+
             </div>
+
         </form>
+
     </div>
-    <a href="/admin/survey" class="btn btn-success">Back</a>
+
 </div>
 
 {% endblock %}

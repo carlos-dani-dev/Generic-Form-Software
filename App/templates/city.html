@@ -1,28 +1,54 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<div class="container">
-    <div class="card">
-        <div class="card-header">
-            Pesquisa de Satisfação - Tá Na Mesa/PB
+<div class="container-fluid min-vh-100 d-flex align-items-start justify-content-center bg-light pt-5">
+
+    <div class="col-12 col-md-10 col-lg-8 col-xl-7">
+
+        <div class="card shadow-sm border-0">
+
+            <div class="card-body p-4 p-md-5">
+
+                <h5 class="fw-semibold mb-4 text-center">
+                    Pesquisa de Satisfação – Tá Na Mesa / PB
+                </h5>
+
+                <form id="cityForm">
+
+                    <div class="mb-4">
+                        <label for="city" class="form-label fw-semibold">
+                            Selecione sua cidade
+                        </label>
+
+                        <select
+                            id="city"
+                            name="city"
+                            class="form-select form-select-lg w-100 py-3 fs-5"
+                            required
+                        >
+
+                            <option value="" selected disabled>
+                                Escolha uma cidade
+                            </option>
+                            <option>Campina Grande</option>
+                            <option>João Pessoa</option>
+                            <option>Patos</option>
+                            <option>Santa Rita</option>
+                        </select>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">
+                            Continuar
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
         </div>
-        <div class="card-body">
-            <form id="cityForm">
-                <div class="form-group">
-                    <label>Selecione a cidade</label>
-                    <select name="city" class="form-control" required>
-                        <option>Campina Grande</option>
-                        <option>João Pessoa</option>
-                        <option>Patos</option>
-                        <option>Santa Rita</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-primary">Enviar cidade</button>
-            </form>
-        </div>
+
     </div>
-    <footer>
-    </footer>
 </div>
 {% endblock %}
 

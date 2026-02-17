@@ -1,74 +1,169 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<div class="container">
-    <div class="card">
-        <div class="card-body">
+<div class="container-fluid py-4 px-4">
+
+    <!-- Card edição da questão -->
+    <div class="card border-0 shadow-sm mb-4">
+
+        <div class="card-body p-4">
+
+            <div class="mb-4">
+                <h5 class="fw-semibold mb-1">Editar questão</h5>
+                <small class="text-muted">
+                    Atualize o texto e as configurações da questão
+                </small>
+            </div>
+
             <form id="editQuestionForm">
-                <div class="form-group">
-                    <label>Questão</label>
-                    <textarea name="question_text" class="form-control" rows=3>{{question.question_text}}</textarea>
+
+                <div class="mb-3">
+                    <label class="form-label small text-muted">
+                        Questão
+                    </label>
+                    <textarea
+                        name="question_text"
+                        class="form-control form-control-sm"
+                        rows="3">{{ question.question_text }}</textarea>
                 </div>
-                <div class="form-group">
-                    <label>Order</label>
-                    <select name="order" class="form-control">
-                        <option {% if question.order == 1 %} selected="selected" {% endif %}>1</option>
-                        <option {% if question.order == 2 %} selected="selected" {% endif %}>2</option>
-                        <option {% if question.order == 3 %} selected="selected" {% endif %}>3</option>
-                        <option {% if question.order == 4 %} selected="selected" {% endif %}>4</option>
-                        <option {% if question.order == 5 %} selected="selected" {% endif %}>5</option>
+
+                <div class="mb-3">
+                    <label class="form-label small text-muted">
+                        Ordem
+                    </label>
+                    <select name="order" class="form-select form-select-sm">
+                        <option {% if question.order == 1 %} selected {% endif %}>1</option>
+                        <option {% if question.order == 2 %} selected {% endif %}>2</option>
+                        <option {% if question.order == 3 %} selected {% endif %}>3</option>
+                        <option {% if question.order == 4 %} selected {% endif %}>4</option>
+                        <option {% if question.order == 5 %} selected {% endif %}>5</option>
                     </select>
                 </div>
-                <div class="form-group form-check">
-                    <input type="checkbox" class="form-check-input" name="is_mandatory" {% if question.is_mandatory %} checked {% endif %}>
-                    <label class="form-check-label">Obrigatória</label>
+
+                <div class="form-check mb-4">
+                    <input
+                        type="checkbox"
+                        class="form-check-input"
+                        name="is_mandatory"
+                        id="isMandatory"
+                        {% if question.is_mandatory %} checked {% endif %}>
+                    <label class="form-check-label small text-muted" for="isMandatory">
+                        Questão obrigatória
+                    </label>
                 </div>
-                <button type="submit" class="btn btn-primary">Editar questão</button>
-                <a href="/admin/question/{{ question.survey_id }}" class="btn btn-success">Back</a>
+
+                <div class="d-flex justify-content-start gap-2">
+                    <a
+                        href="/admin/question/{{ question.survey_id }}"
+                        class="btn btn-sm btn-secondary">
+                        Voltar
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="btn btn-sm btn-primary">
+                        Salvar alterações
+                    </button>
+                </div>
+
             </form>
+
         </div>
     </div>
-    <div class="card-body">
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Alternativa</th>
-                    <th scope="col">Order</th>
-                    <th scope="col">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for question_option in question_options %}
-                <tr class="pointer">
-                    <td>{{ loop.index }}</td>
-                    <td>{{ question_option.value }}</td>
-                    <td>{{ question_option.order }}</td>
-                    <td>
-                        <button class="btn btn-danger deleteQuestionOptionButton" data-question-option-id="{{ question_option.question_option_id }}" type="button" class="btn btn-danger">
-                            Deletar questão
-                        </button>
-                    </td>
-                </tr>
-                {% endfor %}
-                <form id="addQuestionOptionForm">
-                    <tr class="pointer">
-                        <td></td>
-                        <td><textarea name="value" class="form-control form-control-sm border-0 shadow-sm bg-light w-100"></textarea></td>
-                        <td>
-                            <select name="order" class="form-control form-control-sm border-0 shadow-sm bg-light w-100">
-                                <option {% if question.order == 1 %} selected="selected" {% endif %}>1</option>
-                                <option {% if question.order == 2 %} selected="selected" {% endif %}>2</option>
-                                <option {% if question.order == 3 %} selected="selected" {% endif %}>3</option>
-                                <option {% if question.order == 4 %} selected="selected" {% endif %}>4</option>
-                                <option {% if question.order == 5 %} selected="selected" {% endif %}>5</option>
-                            </select>
-                        </td>
-                        <td><button type="submit" class="btn btn-primary">Adicionar alternativa</button></td>
-                    </tr>
-                </form>
-            </tbody>
-        </table>
+
+
+    <!-- Card alternativas -->
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-body p-0">
+
+            <div class="px-4 py-3 border-bottom">
+                <h6 class="mb-0 fw-semibold">Alternativas da questão</h6>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-sm table-hover align-middle mb-0">
+
+                    <thead class="border-bottom">
+                        <tr class="text-muted small">
+                            <th class="ps-4" style="width:60px">#</th>
+                            <th>Alternativa</th>
+                            <th style="width:100px">Ordem</th>
+                            <th class="text-end pe-4" style="width:140px">Ações</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for question_option in question_options %}
+                        <tr>
+                            <td class="ps-4">{{ loop.index }}</td>
+
+                            <td>
+                                {{ question_option.value }}
+                            </td>
+
+                            <td>
+                                {{ question_option.order }}
+                            </td>
+
+                            <td class="text-end pe-4">
+                                <button
+                                    type="button"
+                                    class="btn btn-sm btn-outline-danger deleteQuestionOptionButton"
+                                    data-question-option-id="{{ question_option.question_option_id }}">
+                                    Remover
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+
+                        <!-- Linha para adicionar nova alternativa -->
+                        <form id="addQuestionOptionForm">
+                            <tr class="border-top bg-light">
+
+                                <td class="ps-4 text-muted small">
+                                    Nova
+                                </td>
+
+                                <td>
+                                    <textarea
+                                        name="value"
+                                        class="form-control form-control-sm"
+                                        rows="2"
+                                        placeholder="Digite a alternativa"></textarea>
+                                </td>
+
+                                <td>
+                                    <select
+                                        name="order"
+                                        class="form-select form-select-sm">
+                                        <option>1</option>
+                                        <option>2</option>
+                                        <option>3</option>
+                                        <option>4</option>
+                                        <option>5</option>
+                                    </select>
+                                </td>
+
+                                <td class="text-end pe-4">
+                                    <button
+                                        type="submit"
+                                        class="btn btn-sm btn-primary">
+                                        Adicionar
+                                    </button>
+                                </td>
+
+                            </tr>
+                        </form>
+
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
     </div>
+
 </div>
 {% endblock %}

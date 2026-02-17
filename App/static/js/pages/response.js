@@ -4,6 +4,28 @@ var responseId=-1;
 
 document.addEventListener("DOMContentLoaded", async () => {
     
+    document.querySelectorAll('#newResponseForm input[type="radio"]').forEach(radio => {
+
+        radio.addEventListener('change', e => {
+
+            const name = e.target.name;
+
+            const group = document.querySelectorAll(
+                `#newResponseForm input[name="${name}"]`
+            );
+
+            group.forEach(r => {
+                const label = r.closest('.option-item');
+                label.classList.remove('option-selected');
+            });
+
+            const selectedLabel = e.target.closest('.option-item');
+            selectedLabel.classList.add('option-selected');
+
+        });
+
+    });
+
     const city = getCookie("city");
 
     const payload = {
@@ -11,8 +33,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         begin_date: new Date().toISOString(),
         end_date: null
     };
-
-    console.log("cidade: ", city)
 
     try{
             const response = await fetch(`/response/create/${surveyId}`, {
@@ -43,24 +63,17 @@ document.addEventListener("DOMContentLoaded", async () => {
             document.querySelectorAll(".form-check-input:checked").forEach(input => {
 
                 const questionId = input.closest(".card").dataset.questionId;
-                const questionOptionId = input.closest(".form-check").dataset.questionOptionId;
-
-                console.log(questionId)
-                console.log(questionOptionId)
+                const questionOptionId = input.closest(".form-check-label").dataset.questionOptionId;
 
                 const answer_various = {
                     answer: null,
                     question_id: questionId
                 }
 
-                console.log(answer_various)
-
                 const answer_and_option = {
                     answer: answer_various,
                     question_option_id: questionOptionId
                 }
-
-                console.log(answer_and_option)
 
                 answers.push(answer_and_option)
 
