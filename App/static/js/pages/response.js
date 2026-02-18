@@ -1,10 +1,5 @@
 const pathParts = window.location.pathname.split('/');
 const surveyId = pathParts[3];
-const responseIdCookie = getCookie("response_id");
-if (!responseIdCookie) {
-    window.location.href = `/survey/city/${surveyId}`;
-}
-var responseId = parseInt(responseIdCookie);
 
 document.addEventListener("DOMContentLoaded", async () => {
     
@@ -59,7 +54,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             const payload = {answers: answers};
             
             try{
-                const response = await fetch(`/answer/create/${responseId}`, {
+                const response = await fetch(`/answer/create`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(payload)

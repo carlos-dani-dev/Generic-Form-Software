@@ -5,9 +5,11 @@ from fastapi import APIRouter, Depends, HTTPException, Path, Request, status, Re
 
 from ..database import SessionLocal
 from pydantic import BaseModel, Field
-from ..models import Survey, SurveyStatus, Question, QuestionOption, Response as ResponseModel
+from ..models import Survey, SurveyStatus, Question, QuestionOption, City, Response
 
-from starlette.responses import RedirectResponse, JSONResponse
+from jose import JWTError, jwt
+from ..config import SECRET_KEY, ALGORITHM
+from starlette.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 
 router = APIRouter(
@@ -40,47 +42,55 @@ class SurveyRequest(BaseModel):
     description: str = Field(min_length=5, max_length=100)
     start_date: datetime 
     end_date: Optional[datetime] = None
-    min_responses: int = Field(min=0)
-    max_responses: int = Field(min=1)
-
 
 class CityRequest(BaseModel):
     city: str=Field(min_length=3)
 
+async def get_response_id(db: db_dependency, auth_token):
+    try:
+        payload = jwt.decode(auth_token, SECRET_KEY, algorithms=[ALGORITHM])
+        survey_id: int = payload.get('survey_id')
+        response_id: int = payload.get('response_id')
 
-### PAGES ###
+        if survey_id is None or response_id is None:
+            return None
+
+        response_model = db.query(Response).filter(
+            Response.response_id == response_id,
+            Response.survey_id == survey_id
+        ).first()
+
+        if response_model is None:
+            return None
+        return int(response_id)
+    except (JWTError, ValueError, TypeError):
+        return None
 
 
 def redirect_to_city_page(survey_id: int):
     redirect_response = RedirectResponse(url=f"/survey/city/{survey_id}", status_code=status.HTTP_302_FOUND)
-    redirect_response.delete_cookie(key="response_id")
+    redirect_response.delete_cookie(key="auth_token")
+    print("caiu aqui 1")
     return redirect_response
 
+### PAGES ###
 
 @router.get("/city/{survey_id}")
-async def render_city_code_page(request: Request, survey_id: int):
-    
-    template_response = templates.TemplateResponse("city.html", {"request": request})
+async def render_city_code_page(request: Request, db: db_dependency, survey_id: int):
+    cities = db.query(City).all()
+    template_response = templates.TemplateResponse("city.html", {"request": request, "cities": cities})
     return template_response
+
 
 @router.get("/fill/{survey_id}")
 async def render_survey_response_page(request: Request,
         db: db_dependency, survey_id: int):
     
-    response_id_cookie = request.cookies.get("response_id")
-    if not response_id_cookie:
-        return redirect_to_city_page(survey_id)
     
-    try:
-        response_id = int(response_id_cookie)
-        response_model = db.query(ResponseModel).filter(
-            ResponseModel.response_id == response_id,
-            ResponseModel.survey_id == survey_id
-        ).first()
-        
-        if not response_model:
-            return redirect_to_city_page(survey_id)
-    except (ValueError, TypeError):
+    auth_token = request.cookies.get("auth_token")
+    response_id = await get_response_id(db, auth_token)
+
+    if response_id is None:
         return redirect_to_city_page(survey_id)
     
     question_model = db.query(Question).filter(Question.survey_id == survey_id).order_by(Question.order).all()
@@ -94,7 +104,7 @@ async def render_survey_response_page(request: Request,
     
     return templates.TemplateResponse("response.html", {"request": request,
             "questions": question_model, "questions_opt": question_opt_list})
-
+    
 ### ENDPOINTS ###
 
     

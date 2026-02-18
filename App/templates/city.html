@@ -30,10 +30,9 @@
                             <option value="" selected disabled>
                                 Escolha uma cidade
                             </option>
-                            <option>Campina Grande</option>
-                            <option>João Pessoa</option>
-                            <option>Patos</option>
-                            <option>Santa Rita</option>
+                            {% for city in cities %}
+                            <option value="{{city.city_id}}">{{ city.city_name }}</option>
+                            {% endfor %}
                         </select>
                     </div>
 

@@ -25,8 +25,6 @@ class Survey(Base):
     description = Column(String, nullable=False)
     start_date = Column(DateTime, nullable=False)
     end_date = Column(DateTime)
-    min_responses = Column(Integer)
-    max_responses = Column(Integer)
     survey_status_id = Column(Integer, ForeignKey("survey_status.survey_status_id"))
     
     survey_status = relationship("SurveyStatus")
@@ -41,12 +39,13 @@ class Response(Base):
     __tablename__ = "response"
     
     response_id = Column(Integer, primary_key=True, index=True)
-    city = Column(String, nullable=False)
     begin_date = Column(DateTime, nullable=False)
     end_date = Column(DateTime, nullable=True)
     survey_id = Column(Integer, ForeignKey("survey.survey_id"), nullable=True)
+    city_id = Column(Integer, ForeignKey("city.city_id"), nullable=False)
 
     survey = relationship("Survey")
+    city = relationship("City")
 
 class Answer(Base):
     __tablename__ = "answer"
@@ -96,3 +95,9 @@ class QuestionType(Base):
     
     question_type_id = Column(Integer, primary_key=True)
     question_type = Column(String, nullable=False, unique=True)
+    
+class City(Base):
+    __tablename__ = "city"
+    
+    city_id = Column(Integer, primary_key=True)
+    city_name = Column(String, nullable=False)

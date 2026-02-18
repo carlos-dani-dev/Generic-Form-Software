@@ -1,4 +1,4 @@
-from .routers import admin, answer, auth, question, response, survey
+from .routers import admin, answer, auth, question, response, survey, city
 from fastapi import FastAPI
 from .database import engine, Base
 from . import models
@@ -15,6 +15,7 @@ app.include_router(answer.router)
 app.include_router(question.router)
 app.include_router(response.router)
 app.include_router(survey.router)
+app.include_router(city.router)
 
 
 @app.get('/healthy')

@@ -89,10 +89,11 @@ async def create_answer(db: db_dependency, answer_request: AnswerRequest, respon
     return {"answer_id": answer_model.answer_id}
 
 
-@router.post("/create/{response_id}", status_code=status.HTTP_201_CREATED)
-async def create_answers_and_answer_options(db: db_dependency,
-        answer_list_request: AnswerListRequest,
-        response_id: int = Path(gt=0)):
+@router.post("/create", status_code=status.HTTP_201_CREATED)
+async def create_answers_and_answer_options(request: Request, db: db_dependency,
+        answer_list_request: AnswerListRequest):
+
+    response_id = request
 
     response_model = db.query(Response).filter(Response.response_id == response_id).first()
     if response_model is None: raise HTTPException(status_code=404, detail="Response not found.")

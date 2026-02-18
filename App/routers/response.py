@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import timedelta, datetime, timezone
 from typing import Annotated, Optional
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, Depends, HTTPException, Path, Request, status
@@ -7,6 +7,8 @@ from ..database import SessionLocal
 from pydantic import BaseModel, Field
 from ..models import Survey, SurveyStatus, Question, Answer, Response
 
+from ..config import SECRET_KEY, ALGORITHM
+from jose import JWTError, jwt
 from starlette.responses import RedirectResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 
@@ -32,9 +34,16 @@ templates = Jinja2Templates(directory="App/templates")
 
 
 class ResponseRequest(BaseModel):
-    city: str = Field(min_length=3)
+    city_id: int = Field(min=1)
     begin_date: datetime
     end_date: Optional[datetime] = None
+
+
+async def create_auth_token(survey_id: int, response_id: int, expires_delta: timedelta):
+    encode = {'survey_id': survey_id, 'response_id': response_id}
+    expires = datetime.now(timezone.utc) + expires_delta
+    encode.update({'exp': expires})
+    return jwt.encode(encode, SECRET_KEY, algorithm=ALGORITHM)
 
 
 ### PAGES ###
@@ -72,18 +81,18 @@ async def create_response(db: db_dependency, response_request: ResponseRequest,
     db.commit()
     db.refresh(response_model)
     
-    # Backend cria o cookie de forma segura
-    json_response = JSONResponse({"response_id": response_model.response_id})
+    auth_token = await create_auth_token(survey_id, response_model.response_id, timedelta(minutes=20))
+    json_response = JSONResponse({"auth_token": auth_token})
     json_response.set_cookie(
-        key="response_id",
-        value=str(response_model.response_id),
+        key="auth_token",
+        value=str(auth_token),
         max_age=3600,
         path="/",
-        httponly=False,  # Precisa ser False pois JavaScript lê no response.js
+        httponly=True,
         samesite="lax",
         secure=False  # Mudar para True em produção com HTTPS
     )
-    
+
     return json_response
 
 

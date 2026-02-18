@@ -3,17 +3,13 @@ if (cityForm) {
     cityForm.addEventListener('submit', async function (event) {
         event.preventDefault();
 
-        const form = event.target;
-        const formData = new FormData(form);
-        const data = Object.fromEntries(formData.entries());
-
-        const city = data.city;
+        const city_id = document.getElementById("city").value;
 
         const pathParts = window.location.pathname.split('/');
         const surveyId = parseInt(pathParts[3]);
 
         const payload = {
-            city: city,
+            city_id: parseInt(city_id),
             begin_date: new Date().toISOString(),
             end_date: null
         };
@@ -27,7 +23,6 @@ if (cityForm) {
 
             if (response.ok){
                 const data = await response.json();
-                console.log('Response created:', data.response_id);
             }else{
                 const errorData = await response.json();
                 alert(`Error: ${errorData.detail}`);
