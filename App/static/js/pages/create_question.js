@@ -1,3 +1,24 @@
+// Handle order increment/decrement buttons
+const incrementCreateOrderBtn = document.getElementById('incrementCreateOrderBtn');
+const decrementCreateOrderBtn = document.getElementById('decrementCreateOrderBtn');
+const createOrderDisplay = document.getElementById('createOrderDisplay');
+
+if (incrementCreateOrderBtn && decrementCreateOrderBtn && createOrderDisplay) {
+    incrementCreateOrderBtn.addEventListener('click', function (event) {
+        event.preventDefault();
+        let currentOrder = parseInt(createOrderDisplay.value);
+        createOrderDisplay.value = currentOrder + 1;
+    });
+
+    decrementCreateOrderBtn.addEventListener('click', function (event) {
+        event.preventDefault();
+        let currentOrder = parseInt(createOrderDisplay.value);
+        if (currentOrder > 1) {
+            createOrderDisplay.value = currentOrder - 1;
+        }
+    });
+}
+
 const addQuestionForm = document.getElementById('addQuestionForm');
 if (addQuestionForm) {
     addQuestionForm.addEventListener('submit', async function (event) {

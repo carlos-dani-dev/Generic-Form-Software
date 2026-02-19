@@ -150,6 +150,27 @@ if (loginForm) {
 }
 
 
+// Handle order increment/decrement buttons
+const incrementOrderBtn = document.getElementById('incrementOrderBtn');
+const decrementOrderBtn = document.getElementById('decrementOrderBtn');
+const orderDisplay = document.getElementById('orderDisplay');
+
+if (incrementOrderBtn && decrementOrderBtn && orderDisplay) {
+    incrementOrderBtn.addEventListener('click', function (event) {
+        event.preventDefault();
+        let currentOrder = parseInt(orderDisplay.value);
+        orderDisplay.value = currentOrder + 1;
+    });
+
+    decrementOrderBtn.addEventListener('click', function (event) {
+        event.preventDefault();
+        let currentOrder = parseInt(orderDisplay.value);
+        if (currentOrder > 1) {
+            orderDisplay.value = currentOrder - 1;
+        }
+    });
+}
+
 const editQuestionForm = document.getElementById('editQuestionForm');
 if (editQuestionForm) {
     editQuestionForm.addEventListener('submit', async function (event) {
