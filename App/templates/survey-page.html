@@ -23,7 +23,7 @@
                             <th scope="col">Nome</th>
                             <th scope="col">Descrição</th>
                             <th scope="col" style="width:140px;">Status</th>
-                            <th scope="col" class="text-end pe-4" style="width:240px;">Ações</th>
+                            <th scope="col" class="text-end pe-4" style="width:240px;">Questões</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -47,19 +47,19 @@
                             </td>
 
                             <td class="text-end pe-4">
-                                <div class="d-inline-flex gap-2">
+                                <div class="justify-content-end gap-2">
                                     <button
                                         onclick="window.location.href='/admin/question/{{ survey.survey_id }}'"
                                         type="button"
                                         class="btn btn-sm btn-info">
-                                        Editar questões
+                                        <strong>Ver</strong>
                                     </button>
 
                                     <button
                                         onclick="window.location.href='/admin/create-question/{{ survey.survey_id }}'"
                                         type="button"
                                         class="btn btn-sm btn-primary">
-                                        Adicionar questão
+                                        <strong>+</strong>
                                     </button>
                                 </div>
                             </td>

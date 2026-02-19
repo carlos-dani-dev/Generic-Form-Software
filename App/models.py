@@ -1,5 +1,5 @@
 from .database import Base
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import relationship
 
 
@@ -61,6 +61,10 @@ class Answer(Base):
 class Question(Base):
     __tablename__ = "question"
     
+    __table_args__ = (
+        UniqueConstraint("order", "survey_id", name="uq_question_order_survey"),
+    )
+    
     question_id = Column(Integer, primary_key=True, index=True)
     order = Column(Integer, nullable=False)
     question_text = Column(String, nullable=False)
@@ -101,3 +105,13 @@ class City(Base):
     
     city_id = Column(Integer, primary_key=True)
     city_name = Column(String, nullable=False)
+
+class QuestionDependency(Base):
+    __tablename__ = "question_dependency"
+    
+    question_dependency_id = Column(Integer, primary_key=True)
+    
+    src_question_id = Column(Integer, ForeignKey("question.question_id"), nullable=False)
+    src_question_option_id = Column(Integer, 
+        ForeignKey("question_option.question_option_id"), nullable=False)
+    target_question_id = Column(Integer, ForeignKey("question.question_id"), nullable=False)

@@ -1,0 +1,86 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="container-fluid py-4 px-4">
+    
+    <form id="createDependencyForm">
+        <div
+            class="card border-0 shadow-sm mb-4"
+            data-question-id="{{ chosen_question.question_id }}">
+
+            <div class="px-4 py-3 border-bottom">
+                <h6 class="mb-0 fw-semibold">
+                    {{ chosen_question.question_text }}
+                </h6>
+            </div>
+
+            <div class="card-body px-4 py-3">
+
+                <div class="d-flex flex-column gap-2">
+                    {% for question_opt in questions_opt %}
+                    {% if question_opt.question_id == chosen_question.question_id %}
+
+                    <div class="form-check p-0">
+
+                        <label
+                            class="form-check-label option-item d-flex align-items-center w-100
+                                    border rounded-3 px-3 py-3">
+
+                            <input
+                                class="form-check-input me-3"
+                                value="{{question_opt.question_option_id}}"
+                                type="radio"
+                                name="question_{{ chosen_question.question_id }}">
+
+                            <span class="small">
+                                {{ question_opt.value }}
+                            </span>
+
+                        </label>
+
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <label for="dependency-question" class="form-label fw-semibold">
+                Selecione a questão para injeção de dependência
+            </label>
+
+            <select
+                id="dependency-question"
+                name="dependency-question"
+                class="form-select form-select-lg w-100 py-3 fs-5"
+                required
+            >
+
+                <option value="" selected disabled>
+                    Selecione a questão
+                </option>
+                {% for question in questions %}
+                {% if question.question_id != chosen_question.question_id %}
+                <option value="{{question.question_id}}">{{ loop.index }}. {{ question.question_text }}</option>
+                {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="pt-2">
+            <button
+                type="submit"
+                class="btn btn-success px-4">
+                Criar dependência
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="{{ url_for('static', path='/js/pages/create_dependency.js') }}"></script>
+{% endblock %}

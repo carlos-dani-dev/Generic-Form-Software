@@ -10,6 +10,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
+      - ./db/init:/docker-entrypoint-initdb.d
       - postgres_data:${PG_DATA}
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d TaNaMesa"]
