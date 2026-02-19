@@ -47,6 +47,18 @@
                 </label>
             </div>
 
+            <div class="form-check mb-3">
+                <input
+                    type="checkbox"
+                    class="form-check-input"
+                    name="is_independent"
+                    {% if question.is_independent %} checked {% endif %}
+                    disabled>
+                <label class="form-check-label small text-muted">
+                    Independente
+                </label>
+            </div>
+
             <div class="gap-3">
                 <button
                     type="button"

@@ -64,7 +64,7 @@
                 </option>
                 {% for question in questions %}
                 {% if question.question_id != chosen_question.question_id %}
-                <option value="{{question.question_id}}">{{ loop.index }}. {{ question.question_text }}</option>
+                <option value="{{question.question_id}}">{{ question.question_text }}</option>
                 {% endif %}
                 {% endfor %}
             </select>

@@ -17,9 +17,7 @@ if (createSurveyForm) {
             start_date: data.start_date + "T00:00:00",
             end_date: data.end_date
                 ? data.end_date + "T00:00:00"
-                : null,
-            min_responses: 0,
-            max_responses: 1
+                : null
         };
 
 

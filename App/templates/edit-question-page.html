@@ -67,6 +67,18 @@
                     </label>
                 </div>
 
+                <div class="form-check mb-4">
+                    <input
+                        type="checkbox"
+                        class="form-check-input"
+                        name="is_independent"
+                        id="isIndependent"
+                        {% if question.is_independent %} checked {% endif %} disabled>
+                    <label class="form-check-label small text-muted" for="isIndependent">
+                        Questão independente
+                    </label>
+                </div>
+
                 <div class="justify-content-start gap-3">
                     <a
                         href="/admin/question/{{ question.survey_id }}"
@@ -79,6 +91,20 @@
                         class="btn btn-sm btn-outline-primary">
                         Salvar
                     </button>
+
+                    {% if question.is_independent == True %}
+                    <a
+                        href="/admin/dependency/{{question.question_id}}"
+                        class="btn btn-sm btn-outline-warning">
+                        Criar dependência
+                    </a>
+                    {% else %}
+                    <button id="deleteDependencyButton"
+                        type="click"
+                        class="btn btn-sm btn-outline-danger">
+                        Resetar dependência
+                    </button>
+                    {% endif %}
                 </div>
 
             </form>
@@ -181,4 +207,8 @@
     </div>
 
 </div>
+{% endblock %}
+
+{% block script %}
+<script src="{{ url_for('static', path='/js/pages/create_dependency.js') }}"></script>
 {% endblock %}

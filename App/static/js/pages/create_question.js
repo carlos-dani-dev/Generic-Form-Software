@@ -34,7 +34,8 @@ if (addQuestionForm) {
         const payload = {
             question_text: data.question_text,
             order: parseInt(data.order),
-            is_mandatory: data.is_mandatory
+            is_mandatory: data.is_mandatory,
+            is_independent: true
         };
 
         try {

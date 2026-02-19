@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, Path, Request, status
 
 from ..database import SessionLocal
 from pydantic import BaseModel, Field
-from ..models import Question, QuestionType, QuestionOption, Survey
+from ..models import Question, QuestionDependency, QuestionType, QuestionOption, Survey
 
 
 router = APIRouter(
@@ -35,11 +35,17 @@ class QuestionRequest(BaseModel):
     order: int = Field(min=1)
     question_text: str = Field(min_length=5)
     is_mandatory: bool = Field(default=False)
+    is_independent: bool = Field(default=True)
 
 
 class QuestionOptionRequest(BaseModel):
     order: int = Field(min=1)
     value: str = Field(min_length=3)
+
+
+class QuestionDependencyRequest(BaseModel):
+    source_question_option_id: int = Field(ge=1)
+    target_question_id: int = Field(ge=1)
 
 
 ### ENDPOINTS ###
@@ -59,10 +65,10 @@ async def create_question_type(db: db_dependency, question_type_request: Questio
 
 @router.delete("/question-type/delete/{question_type_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_question_type(db: db_dependency, question_type_id: int = Path(gt=0)):
-    
+
     question_type_model = db.query(QuestionType).filter(QuestionType.question_type_id == question_type_id).first()
     if question_type_model is None: raise HTTPException(status_code=404, detail="Question type not found.")
-    
+
     db.query(QuestionType).filter(QuestionType.question_type_id == question_type_id).first().delete()
     db.commit()
 
@@ -86,17 +92,29 @@ async def create_question(db: db_dependency, question_request: QuestionRequest,
     db.commit()
 
 
+class UpdateQuestionRequest(BaseModel):
+    order: Optional[int] = Field(default=None, ge=1)
+    question_text: Optional[str] = Field(default=None, min_length=5)
+    is_mandatory: Optional[bool] = Field(default=None)
+    is_independent: Optional[bool] = Field(default=None)
+
+
 @router.put("/update/{question_id}", status_code=status.HTTP_200_OK)
-async def update_question(db: db_dependency, question_request: QuestionRequest,
+async def update_question(db: db_dependency, question_request: UpdateQuestionRequest,
                           question_id: int = Path(gt=0)):
     
     question = db.query(Question).filter(Question.question_id == question_id).first()
     if question is None:
         raise HTTPException(status_code=404, detail="Question not found.")
 
-    question.order = question_request.order
-    question.question_text = question_request.question_text
-    question.is_mandatory = question_request.is_mandatory
+    if question_request.order is not None:
+        question.order = question_request.order
+    if question_request.question_text is not None:
+        question.question_text = question_request.question_text
+    if question_request.is_mandatory is not None:
+        question.is_mandatory = question_request.is_mandatory
+    if question_request.is_independent is not None:
+        question.is_independent = question_request.is_independent
 
     db.commit()
     db.refresh(question)
@@ -144,4 +162,34 @@ async def delete_question_option(db: db_dependency, question_option_id: int = Pa
     if question_option_model is None: raise HTTPException(status_code=404, detail="Question option not found.")
     
     db.query(QuestionOption).filter(QuestionOption.question_option_id == question_option_id).delete()
+    db.commit()
+
+
+@router.post("/dependency/{question_id}/create", status_code=status.HTTP_201_CREATED)
+async def create_dependency(db: db_dependency, question_dependency_request: QuestionDependencyRequest,
+                            question_id: int = Path(gt=0)):
+    
+    question_model = db.query(Question).filter(Question.question_id == question_id).first()
+    if question_model is None: raise HTTPException(status_code=404, detail="Question not found.")
+    
+    question_dependency_model = QuestionDependency(
+        src_question_id=question_id,
+        src_question_option_id=question_dependency_request.source_question_option_id,
+        target_question_id=question_dependency_request.target_question_id,
+        survey_id=question_model.survey_id
+    )
+    
+    db.add(question_dependency_model)
+    db.commit()
+    
+    return {"order": question_model.order}
+
+@router.delete("/dependency/{question_id}/delete", status_code=status.HTTP_201_CREATED)
+async def create_dependency(db: db_dependency, question_id: int = Path(gt=0)):
+    
+    question_model = db.query(Question).filter(Question.question_id == question_id).first()
+    if question_model is None: raise HTTPException(status_code=404, detail="Question not found.")
+    
+    db.query(QuestionDependency).filter((QuestionDependency.src_question_id == question_id) | 
+                                       (QuestionDependency.target_question_id == question_id) ).delete()
     db.commit()

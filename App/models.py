@@ -69,6 +69,8 @@ class Question(Base):
     order = Column(Integer, nullable=False)
     question_text = Column(String, nullable=False)
     is_mandatory = Column(Boolean, nullable=False)
+    is_independent = Column(Boolean, nullable=False)
+    
     question_type_id = Column(Integer, ForeignKey("question_type.question_type_id"))
     survey_id = Column(Integer, ForeignKey("survey.survey_id"), nullable=False)
     
@@ -112,6 +114,7 @@ class QuestionDependency(Base):
     question_dependency_id = Column(Integer, primary_key=True)
     
     src_question_id = Column(Integer, ForeignKey("question.question_id"), nullable=False)
-    src_question_option_id = Column(Integer, 
+    src_question_option_id = Column(Integer,
         ForeignKey("question_option.question_option_id"), nullable=False)
     target_question_id = Column(Integer, ForeignKey("question.question_id"), nullable=False)
+    survey_id = Column(Integer, ForeignKey("survey.survey_id"), nullable=False)

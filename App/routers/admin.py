@@ -114,9 +114,29 @@ async def render_create_question_page(request: Request, db: db_dependency, surve
         if user is None:
             return redirect_to_login()
         
-        surveys_status = db.query(SurveyStatus).all()
+        
         
         return templates.TemplateResponse("create-question-page.html", {"request": request})
+    except:
+        return redirect_to_login()
+
+
+@router.get("/dependency/{question_id}")
+async def render_create_question_page(request: Request, db: db_dependency, question_id: int):
+    try:
+        access_token = request.cookies.get('access_token')
+        user = await get_current_user(access_token)
+
+        if user is None:
+            return redirect_to_login()
+
+        chosen_question_model = db.query(Question).filter(Question.question_id == question_id).first()
+        question_model = db.query(Question).all()
+
+        question_opt_model = db.query(QuestionOption).filter(QuestionOption.question_id == question_id).all()
+
+        return templates.TemplateResponse("create-dependency-page.html", {"request": request,
+            "chosen_question": chosen_question_model, "questions":question_model, "questions_opt": question_opt_model})
     except:
         return redirect_to_login()
 

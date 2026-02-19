@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, Path, Request, status, Re
 
 from ..database import SessionLocal
 from pydantic import BaseModel, Field
-from ..models import Survey, SurveyStatus, Question, QuestionOption, City, Response
+from ..models import Survey, SurveyStatus, Question, QuestionOption, City, Response, QuestionDependency
 
 from jose import JWTError, jwt
 from ..config import SECRET_KEY, ALGORITHM
@@ -102,8 +102,10 @@ async def render_survey_response_page(request: Request,
         )
     question_opt_list = [x for _ in question_opt_list for x in _]
     
+    dependencies = db.query(QuestionDependency).all()
+    
     return templates.TemplateResponse("response.html", {"request": request,
-            "questions": question_model, "questions_opt": question_opt_list})
+            "questions": question_model, "questions_opt": question_opt_list, "dependencies": dependencies})
     
 ### ENDPOINTS ###
 

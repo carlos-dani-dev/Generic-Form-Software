@@ -6,6 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException, Path, Request, status
 from ..database import SessionLocal
 from pydantic import BaseModel, Field
 from ..models import Question, Answer, Response, AnswerOption, QuestionOption
+from .survey import get_response_id 
 
 
 router = APIRouter(
@@ -93,7 +94,8 @@ async def create_answer(db: db_dependency, answer_request: AnswerRequest, respon
 async def create_answers_and_answer_options(request: Request, db: db_dependency,
         answer_list_request: AnswerListRequest):
 
-    response_id = request
+    auth_token = request.cookies.get("auth_token")
+    response_id = await get_response_id(db, auth_token)
 
     response_model = db.query(Response).filter(Response.response_id == response_id).first()
     if response_model is None: raise HTTPException(status_code=404, detail="Response not found.")
@@ -109,7 +111,7 @@ async def create_answers_and_answer_options(request: Request, db: db_dependency,
         db.add(answer_option_model)
 
     db.commit()
-    db.refresh(answer_model)
+    db.refresh()
 
 
 @router.delete("/delete/{answer_id}", status_code=status.HTTP_204_NO_CONTENT)
