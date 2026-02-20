@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container-fluid min-vh-100 d-flex align-items-start justify-content-center px-4 pt-5">
+
+    <div class="card border-0 shadow-sm" style="max-width: 420px; width: 100%;">
+
+        <div class="card-body p-4">
+
+            <!-- Título -->
+            <div class="mb-4">
+                <h5 class="fw-semibold mb-1">Acesso administrativo</h5>
+                <small class="text-muted">
+                    Informe suas credenciais para continuar
+                </small>
+            </div>
+
+            <form id="loginForm">
+
+                <div class="mb-3">
+                    <label class="form-label text-muted small">
+                        Username
+                    </label>
+                    <input
+                        type="text"
+                        class="form-control form-control-sm"
+                        name="username"
+                        autocomplete="username"
+                        required>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label text-muted small">
+                        Password
+                    </label>
+                    <input
+                        type="password"
+                        class="form-control form-control-sm"
+                        name="password"
+                        autocomplete="current-password"
+                        required>
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-sm btn-primary">
+                        Entrar
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

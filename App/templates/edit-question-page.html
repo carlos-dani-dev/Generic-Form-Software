@@ -1,0 +1,214 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container-fluid py-4 px-4">
+
+    <!-- Card edição da questão -->
+    <div class="card border-0 shadow-sm mb-4">
+
+        <div class="card-body p-4">
+
+            <div class="mb-4">
+                <h5 class="fw-semibold mb-1">Editar questão</h5>
+                <small class="text-muted">
+                    Atualize o texto e as configurações da questão
+                </small>
+            </div>
+
+            <form id="editQuestionForm">
+
+                <div class="mb-3">
+                    <label class="form-label small text-muted">
+                        Questão
+                    </label>
+                    <textarea
+                        name="question_text"
+                        class="form-control form-control-sm"
+                        rows="3">{{ question.question_text }}</textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small text-muted">
+                        Ordem
+                    </label>
+                    <div class="d-flex align-items-center gap-2">
+                        <button
+                            type="button"
+                            id="decrementOrderBtn"
+                            class="btn btn-sm btn-outline-secondary">
+                            −
+                        </button>
+                        <input
+                            type="text"
+                            id="orderDisplay"
+                            name="order"
+                            class="form-control form-control-sm text-center"
+                            value="{{ question.order }}"
+                            style="max-width: 60px;"
+                            readonly>
+                        <button
+                            type="button"
+                            id="incrementOrderBtn"
+                            class="btn btn-sm btn-outline-secondary">
+                            +
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-check mb-4">
+                    <input
+                        type="checkbox"
+                        class="form-check-input"
+                        name="is_mandatory"
+                        id="isMandatory"
+                        {% if question.is_mandatory %} checked {% endif %}>
+                    <label class="form-check-label small text-muted" for="isMandatory">
+                        Questão obrigatória
+                    </label>
+                </div>
+
+                <div class="form-check mb-4">
+                    <input
+                        type="checkbox"
+                        class="form-check-input"
+                        name="is_independent"
+                        id="isIndependent"
+                        {% if question.is_independent %} checked {% endif %} disabled>
+                    <label class="form-check-label small text-muted" for="isIndependent">
+                        Questão independente
+                    </label>
+                </div>
+
+                <div class="justify-content-start gap-3">
+                    <a
+                        href="/admin/question/{{ question.survey_id }}"
+                        class="btn btn-sm btn-outline-secondary">
+                        Voltar
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="btn btn-sm btn-outline-primary">
+                        Salvar
+                    </button>
+
+                    {% if question.is_independent == True %}
+                    <a
+                        href="/admin/dependency/{{question.question_id}}"
+                        class="btn btn-sm btn-outline-warning">
+                        Criar dependência
+                    </a>
+                    {% else %}
+                    <button id="deleteDependencyButton"
+                        type="click"
+                        class="btn btn-sm btn-outline-danger">
+                        Resetar dependência
+                    </button>
+                    {% endif %}
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+
+    <!-- Card alternativas -->
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-body p-0">
+
+            <div class="px-4 py-3 border-bottom">
+                <h6 class="mb-0 fw-semibold">Alternativas da questão</h6>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-sm table-hover align-middle mb-0">
+
+                    <thead class="border-bottom">
+                        <tr class="text-muted small">
+                            <th class="ps-4" style="width:60px">#</th>
+                            <th>Alternativa</th>
+                            <th style="width:100px">Ordem</th>
+                            <th class="text-end pe-4" style="width:140px">Ações</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for question_option in question_options %}
+                        <tr>
+                            <td class="ps-4">{{ loop.index }}</td>
+
+                            <td>
+                                {{ question_option.value }}
+                            </td>
+
+                            <td>
+                                {{ question_option.order }}
+                            </td>
+
+                            <td class="text-end pe-4">
+                                <button
+                                    type="button"
+                                    class="btn btn-sm btn-outline-danger deleteQuestionOptionButton"
+                                    data-question-option-id="{{ question_option.question_option_id }}">
+                                    Remover
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+
+                        <!-- Linha para adicionar nova alternativa -->
+                        <form id="addQuestionOptionForm">
+                            <tr class="border-top bg-light">
+
+                                <td class="ps-4 text-muted small">
+                                    Nova
+                                </td>
+
+                                <td>
+                                    <textarea
+                                        name="value"
+                                        class="form-control form-control-sm"
+                                        rows="2"
+                                        placeholder="Digite a alternativa"></textarea>
+                                </td>
+
+                                <td>
+                                    <select
+                                        name="order"
+                                        class="form-select form-select-sm">
+                                        <option>1</option>
+                                        <option>2</option>
+                                        <option>3</option>
+                                        <option>4</option>
+                                        <option>5</option>
+                                    </select>
+                                </td>
+
+                                <td class="text-end pe-4">
+                                    <button
+                                        type="submit"
+                                        class="btn btn-sm btn-outline-primary">
+                                        Adicionar
+                                    </button>
+                                </td>
+
+                            </tr>
+                        </form>
+
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="{{ url_for('static', path='/js/pages/create_dependency.js') }}"></script>
+{% endblock %}

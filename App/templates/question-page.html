@@ -1,0 +1,89 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container-fluid py-4 px-4">
+
+    {% for question in questions %}
+    <div class="card border-0 shadow-sm mb-4">
+
+        <div class="card-body p-4">
+
+            <div class="mb-3">
+                <label class="form-label small text-muted">
+                    Texto da questão
+                </label>
+                <textarea
+                    name="description"
+                    class="form-control form-control-sm"
+                    rows="3"
+                    disabled>{{question.question_text}}</textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label small text-muted">
+                    Ordem
+                </label>
+                <select
+                    name="priority"
+                    class="form-select form-select-sm"
+                    disabled>
+                    <option {% if question.order == 1 %} selected {% endif %}>1</option>
+                    <option {% if question.order == 2 %} selected {% endif %}>2</option>
+                    <option {% if question.order == 3 %} selected {% endif %}>3</option>
+                    <option {% if question.order == 4 %} selected {% endif %}>4</option>
+                    <option {% if question.order == 5 %} selected {% endif %}>5</option>
+                </select>
+            </div>
+
+            <div class="form-check mb-3">
+                <input
+                    type="checkbox"
+                    class="form-check-input"
+                    name="complete"
+                    {% if question.is_mandatory %} checked {% endif %}
+                    disabled>
+                <label class="form-check-label small text-muted">
+                    Obrigatória
+                </label>
+            </div>
+
+            <div class="form-check mb-3">
+                <input
+                    type="checkbox"
+                    class="form-check-input"
+                    name="is_independent"
+                    {% if question.is_independent %} checked {% endif %}
+                    disabled>
+                <label class="form-check-label small text-muted">
+                    Independente
+                </label>
+            </div>
+
+            <div class="gap-3">
+                <button
+                    type="button"
+                    class="btn btn-sm btn-primary editQuestionButton"
+                    data-question-id="{{ question.question_id }}">
+                    Editar
+                </button>
+
+                <button
+                    type="button"
+                    class="btn btn-sm btn-danger deleteQuestionButton"
+                    data-question-id="{{ question.question_id }}">
+                    Deletar
+                </button>
+            </div>
+
+        </div>
+    </div>
+    {% endfor %}
+
+    <a
+        href="/admin/survey"
+        class="btn btn-sm btn-outline-secondary">
+        Voltar
+    </a>
+
+</div>
+{% endblock %}
