@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import Annotated, Optional
+from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, Depends, HTTPException, Path, Request, status
 
@@ -25,6 +26,7 @@ def get_db():
     finally: db.close()
 
 db_dependency = Annotated[Session, Depends(get_db)]
+templates = Jinja2Templates(directory="App/templates")
 
 
 class QuestionTypeRequest(BaseModel):
@@ -193,3 +195,43 @@ async def create_dependency(db: db_dependency, question_id: int = Path(gt=0)):
     db.query(QuestionDependency).filter((QuestionDependency.src_question_id == question_id) | 
                                        (QuestionDependency.target_question_id == question_id) ).delete()
     db.commit()
+
+@router.get("/dependency/{question_id}/{question_option_id}/{survey_id}")
+async def get_dependent_question(db: db_dependency, question_id: int=Path(ge=0),
+                                question_option_id: int=Path(ge=0), survey_id:int=Path(ge=0)):
+    
+    dependency_model = db.query(QuestionDependency).filter(
+        QuestionDependency.src_question_id == question_id,
+        QuestionDependency.src_question_option_id == question_option_id
+    ).first()
+    
+    if dependency_model:
+        target_question_id = dependency_model.target_question_id
+        question = db.query(Question).filter(
+            Question.question_id == target_question_id
+        ).first()
+        
+        if question:
+            question_options = db.query(QuestionOption).filter(
+                QuestionOption.question_id == target_question_id
+            ).all()
+            
+            return {
+                "has_dependency": True,
+                "question": {
+                    "question_id": question.question_id,
+                    "question_text": question.question_text,
+                    "order": question.order,
+                    "is_mandatory": question.is_mandatory,
+                    "is_independent": question.is_independent
+                },
+                "options": [
+                    {
+                        "question_option_id": opt.question_option_id,
+                        "value": opt.value,
+                        "order": opt.order
+                    } for opt in question_options
+                ]
+            }
+    
+    return {"has_dependency": False}

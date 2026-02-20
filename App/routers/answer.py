@@ -111,7 +111,7 @@ async def create_answers_and_answer_options(request: Request, db: db_dependency,
         db.add(answer_option_model)
 
     db.commit()
-    db.refresh()
+    db.refresh(answer_model)
 
 
 @router.delete("/delete/{answer_id}", status_code=status.HTTP_204_NO_CONTENT)

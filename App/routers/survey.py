@@ -93,7 +93,8 @@ async def render_survey_response_page(request: Request,
     if response_id is None:
         return redirect_to_city_page(survey_id)
     
-    question_model = db.query(Question).filter(Question.survey_id == survey_id).order_by(Question.order).all()
+    question_model = db.query(Question).filter(Question.survey_id == survey_id,
+        Question.is_independent == True).order_by(Question.order).all()
     
     question_opt_list = []
     for question in question_model:
