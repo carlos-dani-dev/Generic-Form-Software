@@ -1,7 +1,14 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<div class="container-fluid py-4 px-4">
+<div class="container-fluid pt-0 pt-sm-1 pt-md-2 px-4">
+
+    <div class="mb-4">
+        <h3 class="fw-semibold mb-1">
+            Selecione as respostas
+        </h3>
+        <small class="text-muted">Responda todas as perguntas do formulário</small>
+    </div>
 
     <form id="newResponseForm">
         
@@ -56,7 +63,7 @@
             <button
                 type="submit"
                 class="btn btn-primary px-4">
-                Enviar respostas
+                <strong>Enviar respostas</strong>
             </button>
         </div>
 
