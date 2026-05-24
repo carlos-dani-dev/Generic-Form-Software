@@ -1,20 +1,75 @@
-#### Esse é um repositório de documentação do processo de criação do **Generic Form Software**
+# Software de questionário genérico
 
-#### O Generic Form Software é uma aplicação web para criação e preenchimento de formulários dinâmicos (pesquisas), com suporte a:
+<p>Esta é uma aplicação web para criação e preenchimento de questionários dinâmicos (pesquisas de campo).<br>
+Através deste software é possível tanto cadastrar e gerenciar respostas via login de administrador, como respondê-las de maneira anônima.</p>
 
-- autenticação com JWT;
-- gerenciamento de pesquisas, perguntas e opções;
-- perguntas dependentes (lógica condicional);
-- registro de respostas por cidade;
+
+### Features principais
+- autenticação via JWT.
+- gerenciamento de pesquisas completas, perguntas e alternativas.
+- perguntas dependentes (lógica condicional).
+- registro de respostas por cidade.
 - interface web com templates Jinja2.
+- alta disponibilidade via alocação em instância única de EC2 na AWS (ainda sem Load Balancer).
 
-#### Stack principal:
+### Tecnologias utilizadas:
 
-- Backend: FastAPI
-- ORM: SQLAlchemy
-- Banco de dados: PostgreSQL
-- Templates: Jinja2
-- Containerização: Docker + Docker Compose
+<table>
+    <tr>
+        <td>
+            <strong>Ferramenta</strong>
+        </td>
+        <td>
+            <strong>Descrição do uso</strong>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href="https://www.python.org/" target="_blank">Python</a>
+        </td>
+        <td>
+            A linguagem base de todo o projeto.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href="https://fastapi.tiangolo.com/" target="_blank">FastAPI</a>
+        </td>
+        <td>
+            Framework Python para desenvolvimento dos endpoints do backend de maneira assícrona por padrão.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href="https://www.sqlalchemy.org/">SQLAlchemy</a>
+        </td>
+        <td>Framework Python ideal para manipulação do banco de dados. O SQLAlchemy é a ORM mais utilizada em linguagem Python.</td>
+    </tr>
+    <tr>
+        <td>
+            <a href="https://www.postgresql.org/" target="_blank">PostgreSQL</a>
+        </td>
+        <td>
+            Plataforma de banco de dados relacionais escolhida, pensando na importância de praticá-la em virtude da alta demanda do mercado atual.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href="https://jinja.palletsprojects.com/en/stable/" target="_blank">Jinja2</a>
+        </td>
+        <td>
+            Framework Python de desenvolvimento frontend escolhida, pensando na praticidade de aplicação no contexto deste projeto.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a href="https://docs.docker.com/compose/" target="_blank">Docker + Docker Compose</a>
+        </td>
+        <td>
+            Ferramenta de containerização dos componentes utilizados. Facilita a execução de todos os serviços, além de simplifcar o deploy dentro da instância EC2 da AWS.
+        </td>
+    </tr>
+</table>
 
 #### Os componentes
 
