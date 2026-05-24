@@ -71,29 +71,27 @@ Através deste software é possível tanto cadastrar e gerenciar respostas via l
     </tr>
 </table>
 
-#### Os componentes
+### Os componentes da aplicação
 
-- API FastAPI: disponibiliza endpoints REST e páginas renderizadas.
-- PostgreSQL: persiste entidades de autenticação, pesquisas, perguntas e respostas.
-- pgAdmin: interface web para administração do banco.
+- API FastAPI : Disponibiliza endpoints REST e páginas renderizadas. A saúde da API pode ser verificada em <a href="http://localhost:8000/healthy">http://localhost:8000/healthy</a>.
+- PostgreSQL : Persiste entidades de autenticação, pesquisas, perguntas e respostas.
+- pgAdmin : Interface web para administração do banco. Pode ser verificado em <a href="http://localhost:5050">http://localhost:5050</a>.
 
-#### Resumo do funcionamento do software
+### Resumo do funcionamento do software
 
 1. Um usuário autenticado cria pesquisas e perguntas no painel administrativo.
 2. O respondente escolhe a cidade e inicia uma resposta para uma pesquisa.
 3. As perguntas são apresentadas, incluindo dependências entre questões.
 4. As respostas são registradas em response, answer e answer_option.
 
-#### Pré-requisitos para execução do projeto
+### Como rodar o projeto
 
-- Docker e Docker Compose (recomendado)
-- ou Python 3.11+ e acesso a um PostgreSQL
+##### Pré-requisitos para execução do projeto
 
-#### Configuração de ambiente
+<p>Para rodar a aplicação é necessário a instalação do Docker e do Docker Compose, além do Python 3.11+ com acesso a uma string de conexão a um banco de dados PostgreSQL</p>
+<p>O projeto usa variáveis em .env na raiz.</p>
 
-O projeto usa variáveis em .env na raiz.
-
-Exemplo de variáveis necessárias:
+Exemplo do arquivo de variáveis de ambiente:
 
 ```env
 POSTGRES_USER=postgres
@@ -110,50 +108,24 @@ SECRET_KEY=sua_chave_secreta
 ALGORITHM=HS256
 ```
 
-#### Execução com Docker (recomendado)
-
-#### Subir serviços
+<p>Para subir o contâiner do docker, rode, via terminal, o seguinte comando:</p>
 
 ```bash
 docker compose up --build
 ```
 
-Serviços disponíveis:
-
-- API: http://localhost:8000
-- Health check: http://localhost:8000/healthy
-- pgAdmin: http://localhost:5050
-
-#### Inicialização do banco
-
-Os scripts em db/init são executados automaticamente no primeiro start do PostgreSQL:
+<p>Os scripts em db/init são executados automaticamente no primeiro start do PostgreSQL:</p>
 
 - 01_schema.sql: cria tabelas e relacionamentos
 - 02_schema.sql: carga inicial (status, tipo de pergunta, cidades e usuário inicial)
 
-## 6. Execução local (sem Docker)
-
-### 6.1 Instalar dependências
+<p>As dependências necessárias são listadas em requirements.txt e podem ser instaladas automaticamente, via terminal, com o comando abaixo:</p>
 
 ```bash
 pip install -r requirements.txt
 ```
 
-#### Ajuste de SQLALCHEMY_DATABASE_URL no .env
-
-Use um host local, por exemplo:
-
-```env
-SQLALCHEMY_DATABASE_URL=postgresql+psycopg2://postgres:senha@localhost:5432/TaNaMesa
-```
-
-#### Para rodar a aplicação
-
-```bash
-uvicorn App.main:app --host 0.0.0.0 --port 8000 --reload
-```
-
-#### A estrutura de diretórios
+### A estrutura de diretórios da aplicação
 
 ```text
 App/
@@ -170,86 +142,131 @@ db/init/
 	02_schema.sql      # Seed inicial
 ```
 
-#### Principais rotas
+### As principais rotas da aplicação
 
-### 8.1 Saúde
+<table>
+	<tr>
+		<td>
+			Saúde	
+		</td>
+		<td>
+			GET /healthy	
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Autenticação (/auth)
+		</td>
+		<td>
+			GET /auth/login-page
+			POST /auth/ (criação de usuário)
+			POST /auth/token (login OAuth2 password flow)
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Administração (/admin)
+		</td>
+		<td>
+			GET /admin/survey
+			GET /admin/question/{survey_id}
+			GET /admin/create-survey
+			GET /admin/create-question/{survey_id}
+			GET /admin/dependency/{question_id}			
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Pesquisas (/survey)
+		</td>
+		<td>
+			GET /survey/status
+			POST /survey/status/create
+			GET /survey
+			POST /survey/create/{survey_status_id}
+			GET /survey/city/{survey_id}
+			GET /survey/fill/{survey_id}
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Perguntas (/question)
+		</td>
+		<td>
+			GET /question/{survey_id}
+			POST /question/create/{survey_id}
+			PUT /question/update/{question_id}
+			GET /question/question-option/{question_id}
+			POST /question/question_option/create/{question_id}
+			POST /question/dependency/{question_id}/create
+			GET /question/dependency/{question_id}/{question_option_id}/{survey_id}			
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Respostas e respostas-opção
+		</td>
+		<td>
+			Response (/response): criação e consulta de respostas por pesquisa
+			Answer (/answer): criação de respostas textuais e vínculos com opções			
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Cidades (/city)
+		</td>
+		<td>
+			GET /city/{city_id}
+			POST /city/create			
+		</td>
+	</tr>
+</table>
 
-- GET /healthy
-
-#### Autenticação (/auth)
-
-- GET /auth/login-page
-- POST /auth/ (criação de usuário)
-- POST /auth/token (login OAuth2 password flow)
-
-#### Administração (/admin)
-
-- GET /admin/survey
-- GET /admin/question/{survey_id}
-- GET /admin/create-survey
-- GET /admin/create-question/{survey_id}
-- GET /admin/dependency/{question_id}
-
-#### Pesquisas (/survey)
-
-- GET /survey/status
-- POST /survey/status/create
-- GET /survey
-- POST /survey/create/{survey_status_id}
-- GET /survey/city/{survey_id}
-- GET /survey/fill/{survey_id}
-
-#### Perguntas (/question)
-
-- GET /question/{survey_id}
-- POST /question/create/{survey_id}
-- PUT /question/update/{question_id}
-- GET /question/question-option/{question_id}
-- POST /question/question_option/create/{question_id}
-- POST /question/dependency/{question_id}/create
-- GET /question/dependency/{question_id}/{question_option_id}/{survey_id}
-
-#### Respostas e respostas-opção
-
-- Response (/response): criação e consulta de respostas por pesquisa
-- Answer (/answer): criação de respostas textuais e vínculos com opções
-
-#### Cidades (/city)
-
-- GET /city/{city_id}
-- POST /city/create
-
-#### Autenticação e sessão do software
+### A autenticação de sessão do software
 
 - Login administrativo usa token JWT retornado em /auth/token.
 - Rotas administrativas validam token de acesso em cookie access_token.
 - Fluxo de preenchimento de pesquisa usa auth_token (cookie) para identificar response_id/survey_id da sessão de resposta.
 
-#### O banco de dados definido para o projeto
+### O banco de dados definido para o projeto
 
-Entidades principais:
+<table>
+	<tr>
+		<td>Entidades principais</td>
+	</tr>
+	<tr>
+		<td>
+			users
+			survey_status
+			survey
+			question_type
+			question
+			question_option
+			question_dependency
+			response
+			answer
+			answer_option
+			city			
+		</td>
+	</tr>
+</table>
 
-- users
-- survey_status
-- survey
-- question_type
-- question
-- question_option
-- question_dependency
-- response
-- answer
-- answer_option
-- city
+<table>
+	<tr>
+		<td>Relacionamentos importantes</td>
+	</tr>
+	<tr>
+		<td>
+			Survey 1:N Question
+			Question 1:N QuestionOption
+			Response 1:N Answer
+			Answer N:N QuestionOption (via AnswerOption)
+			QuestionDependency conecta perguntas por opção de origem			
+		</td>
+	</tr>
+</table>
 
-Relacionamentos importantes:
-
-- Survey 1:N Question
-- Question 1:N QuestionOption
-- Response 1:N Answer
-- Answer N:N QuestionOption (via AnswerOption)
-- QuestionDependency conecta perguntas por opção de origem
-
-#### Observações finais
+### Observações finais
 
 - A aplicação exige SECRET_KEY no .env para inicializar o módulo de autenticação.
 - O create_all() em startup cria tabelas mapeadas pelo SQLAlchemy (útil em desenvolvimento).
